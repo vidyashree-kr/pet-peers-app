@@ -1,0 +1,159 @@
+{
+  "petDetails": [
+    {
+      "name": "Rabbit",
+      "price": 17,
+      "src": "Rabbit",
+      "id": 1,
+      "description": "Beautiful white rabbit."
+    },
+    {
+      "name": "French bull dog",
+      "price": 17,
+      "src": "Dog2",
+      "id": 2,
+      "description": "Beautiful Chocolate Labrador"
+    },
+    {
+      "name": "Cat",
+      "price": 16,
+      "src": "Cat",
+      "id": 3,
+      "description": "Cute white cat."
+    },
+    {
+      "name": "German Shepherd",
+      "price": 18,
+      "src": "Dog",
+      "id": 4,
+      "description": "Perfect Petzzz Huggable White Lab Puppy"
+    },
+    {
+      "name": "Bull Dog",
+      "price": 25,
+      "src": "bulDog",
+      "id": 5,
+      "description": "Beautiful Chocolate Labrador Retriever"
+    },
+    {
+      "name": "Poodle",
+      "price": 37,
+      "src": "Dog",
+      "id": 6,
+      "description": "Perfect Petzzz Huggable White Lab Puppy"
+    },
+    {
+      "name": "Beagle",
+      "price": 27,
+      "src": "Rabbit",
+      "id": 7,
+      "description": "Beautiful white and grey color rabbit."
+    },
+    {
+      "name": "Rabbit",
+      "price": 17,
+      "src": "Rabbit",
+      "id": 1,
+      "description": "Beautiful white rabbit."
+    },
+    {
+      "name": "French bull dog",
+      "price": 17,
+      "src": "Dog2",
+      "id": 2,
+      "description": "Beautiful Chocolate Labrador Retriever"
+    },
+    {
+      "name": "Cat",
+      "price": 16,
+      "src": "Cat",
+      "id": 3,
+      "description": "Cute white cat."
+    },
+    {
+      "name": "German Shepherd",
+      "price": 18,
+      "src": "Dog",
+      "id": 4,
+      "description": "Perfect Petzzz Huggable White Lab Puppy"
+    },
+    {
+      "name": "Bull Dog",
+      "price": 25,
+      "src": "bulDog",
+      "id": 5,
+      "description": "Beautiful Chocolate Labrador Retriever"
+    },
+    {
+      "name": "Poodle",
+      "price": 37,
+      "src": "Dog",
+      "id": 6,
+      "description": "Perfect Petzzz Huggable White Lab Puppy"
+    },
+    {
+      "name": "Beagle",
+      "price": 27,
+      "src": "Rabbit",
+      "id": 7,
+      "description": "Beautiful white and grey color rabbit."
+    },
+    {
+      "name": "Poodle",
+      "price": 37,
+      "src": "Dog",
+      "id": 6,
+      "description": "Perfect Petzzz Huggable White Lab Puppy"
+    },
+    {
+      "name": "Beagle",
+      "price": 27,
+      "src": "Rabbit",
+      "id": 7,
+      "description": "Beautiful white and grey color rabbit."
+    },
+    {
+      "name": "Rabbit",
+      "price": 17,
+      "src": "Rabbit",
+      "id": 1,
+      "description": "Beautiful white rabbit."
+    }
+  ],
+  "Users": [
+    {
+      "email": "vidya@mail.com",
+      "mobile": 1723654789,
+      "password": "vidya",
+      "id": 1
+    },
+    {
+      "email": "shree@mail.com",
+      "mobile": 1456123654,
+      "password": "shree",
+      "id": 2
+    }
+  ],
+  "myCart": [
+    {
+      "name": "Rabbit",
+      "price": 17,
+      "src": "Rabbit",
+      "id": 2
+    }
+  ],
+  "myOrder": [
+    {
+      "name": "German Shepherd",
+      "price": 18,
+      "src": "Dog",
+      "id": 1
+    },
+    {
+      "name": "Rabbit",
+      "price": 17,
+      "src": "Rabbit",
+      "id": 2
+    }
+  ]
+}

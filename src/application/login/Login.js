@@ -1,10 +1,11 @@
-import React from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { withRouter } from 'react-router'
-import { Grid, Button, TextField } from '@material-ui/core'
-import Background from "../assets/logo.jpg";
+import { Grid, Button } from '@material-ui/core'
+import Background from "../../assets/logo.jpg";
 import gql from 'graphql-tag';
-import {useQuery} from 'react-apollo'
+import { useQuery } from 'react-apollo'
+import axios from 'axios'
 
 const GET_USER_Details = gql`
   {
@@ -14,64 +15,91 @@ const GET_USER_Details = gql`
 `;
 
 export default function Login(props) {
-  const [email, setEmail] = React.useState("")
-  const [password, setPassword] = React.useState("")
-  const [erroMessage, setErroMessage] = React.useState("")
-  const [register, setRegister] = React.useState(false)
-  const [mobile, setMobile] = React.useState(null)
-  const {loading,data,error,client}=useQuery(GET_USER_Details)
-  const {email:Email,password:Password}={...data}
- 
+  const [erroMessage, setErroMessage] = useState(null)
+  const [register, setRegister] = useState(false)
+  const [usersData, setUsersData] = useState([])
+  const emailRef = useRef("")
+  const passwordRef = useRef("")
+  const mobileRef = useRef(null)
+
+  const { loading, data, error, client } = useQuery(GET_USER_Details)
+
+  //getting user details from the server
+  useEffect(() => {
+    axios.get(`http://localhost:3002/users`)
+      .then(res => {
+        const users = res.data;
+        console.log('data', users, res)
+        setUsersData(users);
+      })
+  }, [])
+
+  //handles login button click
   const handleLogin = () => {
-    if (email === Email&& password === Password) {
-      console.log('hi',data,Email)
+    let email = emailRef.current.value
+    let password = passwordRef.current.value
+    const existingUser = usersData.some(item => item.email === email && item.password === password);
+    if (existingUser) {
       props.history.push("/dashboard")
+      client.writeData({ data: { email: email } })
+      client.writeData({ data: { password: password } })
     }
     else {
       setErroMessage('Please Enter Valid Email and Password')
     }
   };
 
-  const handleEmailChange = e => {
-    const userEmail = e.target.value;
-    setEmail(userEmail);
-  };
-
-  const handleMobileChange = e => {
-    const userMobile = e.target.value;
-    setMobile(userMobile);
-  };
-
-  const handlePwdChange = e => {
-    const userPwd = e.target.value;
-    setPassword(userPwd);
-  };
-
+  //handles register button click
   const handleRegister = (e) => {
     e.preventDefault()
     setRegister(true)
     setErroMessage(null)
   }
+
   const validateEmail = (email) => { //Validates the email address
     var emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     return emailRegex.test(email);
   }
 
   const validatePhone = (phone) => { //Validates the phone number
-    var phoneRegex = /^(\+91-|\+91|0)?\d{10}$/; 
+    var phoneRegex = /^(\+91-|\+91|0)?\d{10}$/;
     return phoneRegex.test(phone);
   }
 
-  const doValidate = () => {
+  const doValidate = (email, mobile) => { //validtes phone and email
     return !validateEmail(email) || !validatePhone(mobile)
   }
 
+//add registered user to the users list
+  const addToUsers = (email, mobile, password) => {
+    try {
+      if (erroMessage === null) {
+        var Arr = [];
+        let obj = { email, mobile, password }
+        Arr.push(obj);
+        usersData.push(obj)
+        setUsersData(usersData)
+      }
+    } catch (e) { console.log('e', e.message) }
+  }
+
+  //handles register button click
   const submitRegister = (e) => {
+    let email = emailRef.current.value
+    let mobile = mobileRef.current.value
+    let password = passwordRef.current.value
+    const existingUser = usersData.some(item => item.email === email);
     if (email && password && mobile) {
-      if (!doValidate()) {
-        client.writeData({ data: { email: email } })
-        client.writeData({ data: { password: password } })
-        props.history.push("/dashboard")
+      addToUsers(email, mobile, password)
+      if (!doValidate(email, mobile)) {
+        if (!existingUser) {
+          props.history.push("/")
+          setErroMessage(null)
+          setRegister(false)
+        }
+        else {
+          setErroMessage('User already exists')
+        }
       }
       else {
         setErroMessage('Enter valid Email and Mobile number')
@@ -82,21 +110,25 @@ export default function Login(props) {
     }
   }
 
+//handles back button click in registration page
   const handleBackBtn = () => {
     setRegister(false)
-    props.history.push('/login')
+    props.history.push('/')
   }
   return (
     <Grid container xs={12} direction="row">
-      <Grid item xs={6} align="left" style={{
-        backgroundImage: `url(${Background})`,
-        background: "% 0% no-repeat",
-        width: "700px",
-        height: "620px",
-        opacity: 1
-      }}></Grid>
+      <Grid item xs={6} align="left" >
+        <div style={{
+          backgroundImage: `url(${Background})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '740px 700px',
+          width: "700px",
+          height: "620px",
+          opacity: 1
+        }}></div>
+      </Grid>
       <Grid item xs={6} align="center" style={{
-        background: "#FAFAFA 0% 0% no-repeat padding-box", background: "#FAFAFA 0% 0% no-repeat padding-box",
+        background: "#FAFAFA 0% 0% no-repeat padding-box",
         boxShadow: "0px 0px 48px grey",
         borderRadius: "30px 0px 0px 30px",
         opacity: 1
@@ -124,7 +156,8 @@ export default function Login(props) {
               </label>
         <Grid item style={{ marginBottom: "20px" }}>
           <input
-            required
+            ref={emailRef}
+            autoFocus={true}
             type="text"
             variant="outlined"
             style={{
@@ -133,7 +166,6 @@ export default function Login(props) {
               fontSize: "14px",
               height: "40px"
             }}
-            onChange={e => handleEmailChange(e)}
             placeholder="Enter email adress"
           />
         </Grid>
@@ -150,6 +182,7 @@ export default function Login(props) {
               </label>
           <Grid item style={{ marginBottom: "20px" }}>
             <input
+              ref={mobileRef}
               type="text"
               variant="outlined"
               style={{
@@ -158,7 +191,6 @@ export default function Login(props) {
                 fontSize: "14px",
                 height: "40px"
               }}
-              onChange={e => handleMobileChange(e)}
               placeholder="Enter Mobile Number"
             />
           </Grid></> : null}
@@ -176,6 +208,7 @@ export default function Login(props) {
               </label>
         <Grid item>
           <input
+            ref={passwordRef}
             type="password"
             variant="outlined"
             style={{
@@ -184,7 +217,6 @@ export default function Login(props) {
               fontSize: "14px",
               height: "40px"
             }}
-            onChange={e => handlePwdChange(e)}
             placeholder="Enter Password"
           />
         </Grid>
