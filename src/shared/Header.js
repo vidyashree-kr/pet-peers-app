@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+uimport React from "react";
 import { Grid, Button, TextField, Badge } from "@material-ui/core";
 import CartIcon from '../assets/cart.png'
 import { withRouter } from 'react-router'
@@ -9,17 +9,25 @@ export default function Header(props) {
     props.history.push("/")
   }
 
-  const handleMyOrders=()=>{
-    props.getMyOrders()
-    props.handleCartClick()
+  const handleMyOrders=(e)=>{
+    e.preventDefault()
+    // if(props.email){
+    props.history.push('/myOrders')
+    // }
   }
   
+  const handleMyCart=(e)=>{
+    e.preventDefault()
+    // if(props.email){
+    props.history.push('/myCart')
+    // }
+  }
   return (
     <Grid container xs={12}>
       <nav>
         <header
           style={{
-            width: "1345px",
+            width: "1260px",
             height: "70px",
             backgroundColor: "blue",
             color: "white",
@@ -30,6 +38,7 @@ export default function Header(props) {
           <Grid xs={12} container direction="row" style={{ marginLeft: 10 }}>
             <Grid item xs={4} align="left">
               <TextField
+              disabled={props.disabled}
                 style={{ width: 320, margin: 7, backgroundColor: 'white' }}
                 variant="outlined"
                 color="white"
@@ -43,7 +52,7 @@ export default function Header(props) {
                 fontSize: 14, fontWeight: 'bold'
               }}>
                 <img src={CartIcon} width="30px" height="30px"
-                  onClick={e => props.handleCartClick(e)}
+                  onClick={(e) => handleMyCart(e)}
                 />
               </Badge>
             </Grid>
@@ -53,7 +62,7 @@ export default function Header(props) {
             <Grid item xs={4} align="right">
               <Grid item>{props.email ? `Logged in as: ${props.email}` : ''} &nbsp;&nbsp;&nbsp;</Grid>
               <Grid item>
-               {props.orders ? <span style={{cursor:'pointer'}} onClick={()=>handleMyOrders()}>My Orders</span>:null}
+               <span style={{cursor:'pointer'}} onClick={(e)=>handleMyOrders(e)}>My Orders</span>
                 <Button
                 onClick={handleLogout}
                 style={{
