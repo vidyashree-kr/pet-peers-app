@@ -24,12 +24,7 @@ export default function Dashboard(props) {
   const [searched, setSearched] = useState(false)
   const [searchData, setSearchData] = useState([])
   const [myCart, setMyCart] = useState([])
-  const [open, setOpen] = useState(false)
-  const [totalPrice, setTotalPrice] = useState(0)
   const myCartRef = useRef("")
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [orders, setOrders] = useState(false)
-  const [myOrder, setMyOrders] = useState([])
 
   //getting login details from the server
   const { loading, data, error, client } = useQuery(GET_USER_Details)
@@ -54,7 +49,6 @@ export default function Dashboard(props) {
       axios.get(`http://localhost:3002/myCart`)
         .then(res => {
           const pets = res.data;
-          console.log('refresh cart',pets)
           setMyCart(pets)
         })
     }
@@ -64,39 +58,7 @@ export default function Dashboard(props) {
   
   useEffect(() => {
     getCartData()
-    getMyOrders()
   }, [])
-
-  //getting ordered items from the server
-  const getMyOrders = () => {
-    axios.get(`http://localhost:3002/myOrder`)
-      .then(res => {
-        const pets = res.data;
-        setMyOrders(pets)
-        if(pets.length>0){
-          setOrders(true)
-        }
-      })
-  }
-
-  //refresh myorders list
-  const handleOrder = (cartItem) => {
-    getMyOrders()
-  }
-
-  //My cart navigation
-  const handleCartClick =async (e) => {
-    if (Email) {
-       setIsCartOpen(true)
-      if (myCart.length !== 0) {
-        const total = myCart.reduce((a, b) => ({ price: a.price + b.price }));
-        await setTotalPrice(total.price);
-      }
-      else {
-        setTotalPrice(0);
-      }
-    }
-  };
 
   //add selected item to the cart
   const addItemToCart = (obj) => {
@@ -112,17 +74,17 @@ export default function Dashboard(props) {
         let obj = { name, price, src }
         await addItemToCart(obj)
         getCartData()
-        handleCartClick()
+        props.history.push('/myCart')
       }
       else {
         alert("Kindly Login to place your order")
-        props.history.push('/login')
+        props.history.push('/')
       }
     } catch (e) { }
   }
 
   //handles add button click
-  const handleAdd = (e, pet) => {
+  const handleAdd = async(e, pet) => {
     e.preventDefault();
     try {
       if (Email) {
@@ -132,11 +94,11 @@ export default function Dashboard(props) {
           src: pet.src
         };
         addItemToCart(obj)
-        getCartData()
+        await getCartData()
       }
       else {
         alert("Kindly Login to place your order")
-        props.history.push('/login')
+        props.history.push('/')
       }
     } catch (e) { }
   };
@@ -172,30 +134,14 @@ export default function Dashboard(props) {
     } catch (e) { }
   };
 
-  //handling back button click
-  const handleBackLink = () => {
-    setIsCartOpen(false)
-  }
-
-  //clearing cart items
-  const handleClear = () => {
-    setMyCart([])
-  }
-
   return (
-    console.log('oreder',orders),
     <div>
       <Header 
-        orders={orders}
+      disabled={false}
         email={Email}
         handleSearch={e => handleSearch(e)}
         myCart={myCart}
-        totalPrice={totalPrice}
-        open={open}
-        getMyOrders={getMyOrders}
-        handleCartClick={() => handleCartClick()}
       />
-      {!isCartOpen ?
         <Layout
           email={Email}
           ref={myCartRef}
@@ -204,29 +150,7 @@ export default function Dashboard(props) {
           searched={searched}
           handleBuy={(e, pet) => handleBuy(e, pet)}
           handleAdd={(e, pet) => handleAdd(e, pet)}
-        /> :
-        myCart.length === 0 || 
-        orders  ?
-          <div style={{ marginLeft: 15 }}>
-            <h1>{myCart.length===0 ?'Your Cart is Empty': orders ? 'My Orders':null}</h1>
-              { orders ? 
-              <OrdersTable
-              myOrder={myOrder}
-              />
-              :null}
-             <Link onClick={handleBackLink} style={{ fontWeight: 'bold', fontSize: 20 }}> 
-             {myCart.length===0 ?'Shop Now': orders ? 'Continue Shopping':null}
-             </Link>
-          </div> 
-          :
-          <MyCart
-            handleOrder={() => handleOrder()}
-            handleClear={handleClear}
-            handleBackLink={handleBackLink}
-            cartItem={myCart}
-            getCartData={getCartData}
-            totalPrice={totalPrice}
-          />}
+        /> 
     </div>
   )
 }
