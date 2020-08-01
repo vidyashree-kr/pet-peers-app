@@ -10,7 +10,7 @@ export default function CheckoutDialog(props) {
   const [errorM, setErrorM] = useState(null)
 
   //handles confirm button click for the final order confirmation
-  const handleConfirm = () => {
+  const handleConfirm = async() => {
     let address = addressRef.current.value
     if (address !== "") {
       setOpen(true)
@@ -18,10 +18,11 @@ export default function CheckoutDialog(props) {
       setTimeout(handleClose(), 4000);
       setErrorM(null)
       // alert("You have successfully placed your order")
-      addItemsToMyOrder()
-      props.handleOrder()
+      await addItemsToMyOrder()
+      // props.handleOrder()
       props.handleClose()
-      props.handleClear()
+      props.history.push('/dashboard')
+      // props.handleClear()
     } else {
       setErrorM("Please Enter your Address")
     }
@@ -29,10 +30,21 @@ export default function CheckoutDialog(props) {
 
   //add ordered item to the myorders list
   const addItemsToMyOrder=()=>{
-    props.cartItem.map((order=>{
+    props.cartItems.map((order=>{
       console.log('last',order)
       try{
-        axios.post(`http://localhost:3002/myOrder`, order).then(res => {console.log(res) })
+        axios.post(`http://localhost:3002/myOrder`, order).then(res => {
+          const pets = res.data;
+      if(pets){
+        for(var i=0; i<=pets.length;i++){
+          var id=pets[i].id
+          console.log('id',id)
+        }
+          // axios.delete(`http://localhost:3002/myCart/${id}`).then(result => {
+          // console.log('delete',result)
+        // })
+      }
+      })
       }
       catch(e){
         console.log(e.message)
@@ -89,8 +101,7 @@ export default function CheckoutDialog(props) {
               Shiiping: <b>Free</b>
             </Grid>
             <Grid style={{ marginBottom: 10 }}>
-              Total Amount: <b>{props.deleted ?
-                Number(props.totalAmount).toFixed(2) : Number(props.totalPrice).toFixed(2)}</b>
+              Number of Items: <b>{props.cartItems.length}</b>
             </Grid>
             <Grid style={{ marginBottom: 10 }}>
               Payment Method: <b>Cash On Delivery(COD)</b>
@@ -100,11 +111,10 @@ export default function CheckoutDialog(props) {
               <Grid item xs={7}>
                 <Grid container xs={12} style={{ marginTop: 10, marginLeft: 5 }}>
                   <Grid item xs={6}>
-                    SUB TOTAL
+                  Total Amount:
                 </Grid>
                   <Grid item xs={6} align="right">
-                    {props.deleted ?
-                      Number(props.totalAmount).toFixed(2) : Number(props.totalPrice).toFixed(2)}
+                    <b>${Number(props.totalAmount).toFixed(2)}</b>
                   </Grid>
                 </Grid>
                 <Grid container xs={12}>
