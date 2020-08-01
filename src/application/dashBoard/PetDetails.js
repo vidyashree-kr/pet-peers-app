@@ -8,7 +8,7 @@ const PetDetails = (props)=>{
            <div style={{ padding: 10,boxShadow: "0px 1px 6px #2C2C2C1C" }}>
            <div>
              <img src={require(`../../assets/${props.pet.src.toLowerCase()}.jpg`)}
-              width="290px" height="200px" />
+              width="270px" height="200px" />
              </div>
              <Grid container xs={12} direction="row" >
              <Grid item xs={10} align="left" >
