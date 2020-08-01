@@ -123,15 +123,39 @@
   "Users": [
     {
       "email": "vidya@mail.com",
-      "mobile": 1723654789,
+      "mobile": "1723654789",
       "password": "vidya",
       "id": 1
     },
     {
       "email": "shree@mail.com",
-      "mobile": 1456123654,
+      "mobile": "1456123654",
       "password": "shree",
       "id": 2
+    },
+    {
+      "email": "pushu@mail.com",
+      "mobile": "9087654321",
+      "password": "pushu",
+      "id": 3
+    },
+    {
+      "email": "pushkal@mail.com",
+      "mobile": "12345678909",
+      "password": "push",
+      "id": 4
+    },
+    {
+      "email": "kavu@mail.com",
+      "mobile": "1234567890",
+      "password": "kavu",
+      "id": 5
+    },
+    {
+      "email": "ya@mail.com",
+      "mobile": "7896543219",
+      "password": "vidya",
+      "id": 6
     }
   ],
   "myCart": [
@@ -139,20 +163,20 @@
       "name": "Rabbit",
       "price": 17,
       "src": "Rabbit",
-      "id": 2
+      "id": 1
     }
   ],
   "myOrder": [
     {
-      "name": "German Shepherd",
-      "price": 18,
-      "src": "Dog",
-      "id": 1
-    },
-    {
       "name": "Rabbit",
       "price": 17,
       "src": "Rabbit",
+      "id": 1
+    },
+    {
+      "name": "Poodle",
+      "price": 37,
+      "src": "Dog",
       "id": 2
     }
   ]
