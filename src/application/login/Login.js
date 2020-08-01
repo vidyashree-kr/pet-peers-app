@@ -26,13 +26,17 @@ export default function Login(props) {
 
   //getting user details from the server
   useEffect(() => {
-    axios.get(`http://localhost:3002/users`)
-      .then(res => {
-        const users = res.data;
-        console.log('data', users, res)
-        setUsersData(users);
-      })
+  getUsersData()
   }, [])
+
+  const getUsersData=()=>{
+    axios.get(`http://localhost:3002/users`)
+    .then(res => {
+      const users = res.data;
+      console.log('data', users, res)
+      setUsersData(users);
+    })
+  }
 
   //handles login button click
   const handleLogin = () => {
@@ -71,28 +75,29 @@ export default function Login(props) {
   }
 
 //add registered user to the users list
-  const addToUsers = (email, mobile, password) => {
+  const addToUsers = (user) => {
     try {
       if (erroMessage === null) {
-        var Arr = [];
-        let obj = { email, mobile, password }
-        Arr.push(obj);
-        usersData.push(obj)
-        setUsersData(usersData)
+        axios.post(`http://localhost:3002/Users`, user).then(res => { })
       }
     } catch (e) { console.log('e', e.message) }
   }
 
   //handles register button click
-  const submitRegister = (e) => {
+  const submitRegister = async(e) => {
     let email = emailRef.current.value
     let mobile = mobileRef.current.value
     let password = passwordRef.current.value
     const existingUser = usersData.some(item => item.email === email);
     if (email && password && mobile) {
-      addToUsers(email, mobile, password)
+      let user = { email, mobile, password }
+     await addToUsers(user)
+     getUsersData()
       if (!doValidate(email, mobile)) {
         if (!existingUser) {
+         emailRef.current.value=''
+         mobileRef.current.value=''
+        passwordRef.current.value=''
           props.history.push("/")
           setErroMessage(null)
           setRegister(false)
@@ -115,15 +120,16 @@ export default function Login(props) {
     setRegister(false)
     props.history.push('/')
   }
+
   return (
     <Grid container xs={12} direction="row">
       <Grid item xs={6} align="left" >
         <div style={{
           backgroundImage: `url(${Background})`,
           backgroundRepeat: 'no-repeat',
-          backgroundSize: '740px 700px',
-          width: "700px",
-          height: "620px",
+          backgroundSize: '700px 680px',
+          width: "660px",
+          height: "575px",
           opacity: 1
         }}></div>
       </Grid>
