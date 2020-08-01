@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import CartTable from "./CartTable";
+import Header from "../../shared/Header"
 import { Grid, Button } from "@material-ui/core";
 import { withRouter } from 'react-router'
 import ConfirmDialog from './ConfirmDialog'
@@ -11,9 +13,30 @@ export default class MyCart extends Component {
     this.state = {
       totalAmount: 0,
       open: false,
-      deleted: false
+      cartItems:[]
     };
   }
+//getting cart items from the server
+ getCartData = () => {
+  try {
+    axios.get(`http://localhost:3002/myCart`)
+      .then(res => {
+        const pets = res.data;
+        this.setState({cartItems:pets})
+        if (pets.length !== 0) {
+          const total = pets.reduce((a, b) => ({ price: a.price + b.price }));
+          const totalPrice=total.price
+           this.setState({totalAmount:totalPrice});
+        }
+      })
+  }
+  catch (e) {
+  }
+}
+
+async componentDidMount(){
+await this.getCartData()
+}
 
   //deletes selected item from the shopping cart
   deleteItem=(id)=>{
@@ -26,16 +49,14 @@ export default class MyCart extends Component {
     }
   }
   handleItemDelete = (id) => {
-    const { cartItem } = this.props;
-    console.log('delete cartItem',cartItem,id)
-    this.setState({ deleted: true })
+    const { cartItems } = this.state;
     try {
       if (id > -1) {
-        // cartItem.splice(index, 1);
+        // cartItems.splice(index, 1);
         this.deleteItem(id)
-        this.props.getCartData()
-        if (cartItem.length !== 0) {
-          const total = cartItem.reduce((a, b) => ({ price: a.price + b.price }));
+        this.getCartData()
+        if (cartItems.length !== 0) {
+          const total = cartItems.reduce((a, b) => ({ price: a.price + b.price }));
           this.setState({ totalAmount: total.price });
         }
         else {
@@ -60,19 +81,21 @@ export default class MyCart extends Component {
 
   //handles cancel button click in the shopping cart
   handleCancel = () => {
-    this.props.handleBackLink()
     this.props.history.push('/dashboard')
   }
-
  
   render() {
-    const { totalAmount } = this.state;
     return (
-      <>
+      <div>
+        <Header disabled={true}/>
         <div style={{ marginLeft: 10 }}>
+        {this.state.cartItems.length===0 ?
+            <div><h1>Your Cart is Empty</h1>
+             <Link onClick={this.handleCancel} style={{ fontWeight: 'bold', fontSize: 20 }}>Shop Now</Link>
+            </div> : <>
           <h2>YOUR SHOPPING CART</h2>
           <CartTable
-            cartItem={this.props.cartItem}
+            cartItems={this.state.cartItems}
             handleItemDelete={(id)=>this.handleItemDelete(id)}
           />
           <div style={{ borderBottom: "4px solid grey", marginBottom: 10 }}></div>
@@ -83,8 +106,7 @@ export default class MyCart extends Component {
                   Total Amount:
               </Grid>
                 <Grid item xs={9} align="left">
-                  {this.state.deleted ?
-                    Number(totalAmount).toFixed(2) : Number(this.props.totalPrice).toFixed(2)}
+                    {Number(this.state.totalAmount).toFixed(2)}
                 </Grid>
               </Grid>
               <Grid container xs={12}>
@@ -123,18 +145,15 @@ export default class MyCart extends Component {
 
             </Grid>
           </Grid>
-        </div>
-        <ConfirmDialog
-        cartItem={this.props.cartItem}
+          </>}
+          <ConfirmDialog
+        cartItems={this.state.cartItems}
           handleClose={this.handleClose}
           open={this.state.open}
-          deleted={this.state.deleted}
           totalAmount={this.state.totalAmount}
-          totalPrice={this.props.totalPrice}
-          handleClear={this.props.handleClear}
-          handleOrder={()=>this.props.handleOrder()}
         />
-      </>
+        </div>
+        </div>
     );
   }
 }
