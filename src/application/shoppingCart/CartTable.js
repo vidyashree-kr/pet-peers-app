@@ -22,12 +22,12 @@ export default function CartTable(props) {
     <div>
       <table >
         <tr>
-          <th style={{ color: 'blue', fontWeight: 'bold' }}>{props.cartItem.length} ITEMS</th>
+          <th style={{ color: 'blue', fontWeight: 'bold' }}>{props.cartItems.length} ITEMS</th>
           <th style={{ color: 'blue', fontWeight: 'bold', paddingLeft: 40 }}> Name</th>
           <th style={{ color: 'blue', fontWeight: 'bold', paddingLeft: 50 }}> PRICE($)</th>
         </tr>
         <tbody>
-          {props.cartItem.map((row, index) => (
+          {props.cartItems.map((row, index) => (
             <tr key={row.id}>
               <td>
                 <img src={require(`../../assets/${row.src.toLowerCase()}.jpg`)}
