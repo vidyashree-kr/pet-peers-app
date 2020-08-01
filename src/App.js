@@ -9,6 +9,7 @@ import { ApolloProvider } from 'react-apollo';
 const MyCart = React.lazy(() => import('./application/shoppingCart/MyCart'))
 const Login = React.lazy(() => import('./application/login/Login'))
 const Dashboard = React.lazy(() => import('./application/dashBoard/Dashboard'))
+const MyOrders = React.lazy(() => import('./application/myOrders/MyOrders'))
 
 export default function App(props) {
   return (
@@ -20,7 +21,10 @@ export default function App(props) {
               <Route path="/dashboard">
                 <Dashboard />
               </Route>
-              <Route path="/cart">
+              <Route path="/myOrders">
+                <MyOrders />
+              </Route>
+              <Route path="/myCart">
                 <MyCart />
               </Route>
               <Route path="/">
